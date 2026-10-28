@@ -30,19 +30,19 @@ Starting point: the domain's zone already exists in Hetzner DNS, possibly with r
    zone to `config/production.yaml`, and checks that the plan shows no changes. Then
    it pushes branch `onboard/<zone>`. The run summary links to the page where you
    open the pull request.
-7. **Open and merge the onboard PR.** Its plan comment must say "No changes were
-   planned". Merging starts managing the zone; the apply on `main` should report 0
-   changes.
-8. **Protect `main`.** Settings → Rules → new branch ruleset on `main`:
-   - require a pull request;
-   - require the status check `plan / plan`;
-   - block force pushes.
+7. **Open and merge the onboard PR.** Open it from the link, or have a Claude Code
+   session open it. Its plan comment must say "No changes were planned". Merging
+   starts managing the zone; the apply on `main` should report 0 changes.
+8. **Protect `main`.** Settings → Rules → Rulesets → New ruleset → Import a ruleset,
+   and pick [`.github/rulesets/main.json`](.github/rulesets/main.json). On the
+   default branch it requires a pull request with the status check `plan / plan`,
+   and blocks force pushes and deletion.
 
 Then change records as below; mail and other record sets are ordinary PRs.
 
-The PR in step 7 has to be opened by a person. GitHub starts no workflows for pull
-requests opened by the built-in workflow token, so the required plan check would never
-report on one.
+The onboard workflow does not open the PR in step 7 itself. GitHub starts no workflows
+for pull requests opened by the built-in workflow token, so the required plan check
+would never report on one.
 
 ## Changing records
 
