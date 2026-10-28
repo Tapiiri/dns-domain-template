@@ -47,13 +47,13 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: Tapiiri/dns-as-code/.github/workflows/plan.yml@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+    uses: Tapiiri/dns-as-code/.github/workflows/plan.yml@6b81d2f9a411c64dbc318cf9e213357f13193cc0 # v1.2.0
     secrets:
       hetzner-token-ro: ${{ secrets.HETZNER_TOKEN_RO }}
 
   dump:
     if: github.event_name == 'workflow_dispatch' && inputs.action == 'dump'
-    uses: Tapiiri/dns-as-code/.github/workflows/dump.yml@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+    uses: Tapiiri/dns-as-code/.github/workflows/dump.yml@6b81d2f9a411c64dbc318cf9e213357f13193cc0 # v1.2.0
     with:
       zone: ${{ inputs.zone }}
     secrets:
@@ -63,7 +63,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.action == 'onboard'
     permissions:
       contents: write
-    uses: Tapiiri/dns-as-code/.github/workflows/onboard.yml@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+    uses: Tapiiri/dns-as-code/.github/workflows/onboard.yml@6b81d2f9a411c64dbc318cf9e213357f13193cc0 # v1.2.0
     with:
       zone: ${{ inputs.zone }}
     secrets:
@@ -79,6 +79,6 @@ jobs:
       group: dns-apply
       cancel-in-progress: false
     steps:
-      - uses: Tapiiri/dns-as-code/actions/apply@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+      - uses: Tapiiri/dns-as-code/actions/apply@6b81d2f9a411c64dbc318cf9e213357f13193cc0 # v1.2.0
         with:
           hetzner-token: ${{ secrets.HETZNER_TOKEN }}

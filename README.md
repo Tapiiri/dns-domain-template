@@ -38,7 +38,9 @@ Starting point: the domain's zone already exists in Hetzner DNS, possibly with r
    default branch it requires a pull request with the status check `plan / plan`,
    and blocks force pushes and deletion.
 
-Then change records as below; mail and other record sets are ordinary PRs.
+Then change records as below. Records for common services, such as Migadu mail, are in
+dns-as-code's [`record-sets/`](https://github.com/Tapiiri/dns-as-code/tree/main/record-sets);
+adding one is an ordinary PR.
 
 The onboard workflow does not open the PR in step 7 itself. GitHub starts no workflows
 for pull requests opened by the built-in workflow token, so the required plan check
@@ -64,3 +66,7 @@ the cause and re-run the job.
 and version comment on every `Tapiiri/dns-as-code` line, and update the `dns-as-code`
 entry in `flake.lock` to the same commit (`nix flake update dns-as-code`, or by hand in
 a Claude Code session). The PR's plan shows whether DNS would change.
+
+## License
+
+[MIT](LICENSE). A repo created from this template may replace or drop it.

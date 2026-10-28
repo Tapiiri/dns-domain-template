@@ -5,11 +5,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1793212063,
-        "narHash": "sha256-1zKpozgCxQNslmRJL4Wtm9O6EtCJTAwFg7lqtgT/3KQ=",
+        "lastModified": 1793221030,
+        "narHash": "sha256-1KjITpw+kYlvK7/71WT19q9bC379V8QTMafENXosX3I=",
         "owner": "Tapiiri",
         "repo": "dns-as-code",
-        "rev": "d3392c720fb8e30f798d9b11d368bc23c4f6a078",
+        "rev": "6b81d2f9a411c64dbc318cf9e213357f13193cc0",
         "type": "github"
       },
       "original": {
