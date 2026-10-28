@@ -1,0 +1,84 @@
+# DNS for this repo's zone, run from GitHub Actions. The jobs live in
+# Tapiiri/dns-as-code; all of them build `.#octodns` from this repo's flake,
+# so this flake.lock pins the version.
+#
+#   pull request   -> plan:    dry run, read-only token HETZNER_TOKEN_RO
+#                              (repository secret), posted as a PR comment
+#   push to main   -> apply:   --doit, read-write token HETZNER_TOKEN
+#                              (environment secret in `production`, main only)
+#   manual run     -> plan, dump (print the live zone as YAML), or onboard
+#                     (start managing the zone: push branch onboard/<zone>)
+#
+# dns-as-code is pinned to a release's commit SHA, never @main: the apply job
+# holds the read-write token. To upgrade, replace the SHA and version comment
+# on every Tapiiri/dns-as-code line below; the PR's plan shows any effect.
+
+name: dns
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "zones/**"
+      - "config/**"
+      - "flake.nix"
+      - "flake.lock"
+      - ".github/workflows/dns.yml"
+  # Every PR runs the plan, so a required plan check always reports.
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to run
+        type: choice
+        options: [plan, dump, onboard]
+        default: plan
+      zone:
+        description: Zone name for dump and onboard, e.g. example.com
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.action == 'plan')
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: Tapiiri/dns-as-code/.github/workflows/plan.yml@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+    secrets:
+      hetzner-token-ro: ${{ secrets.HETZNER_TOKEN_RO }}
+
+  dump:
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'dump'
+    uses: Tapiiri/dns-as-code/.github/workflows/dump.yml@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+    with:
+      zone: ${{ inputs.zone }}
+    secrets:
+      hetzner-token-ro: ${{ secrets.HETZNER_TOKEN_RO }}
+
+  onboard:
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'onboard'
+    permissions:
+      contents: write
+    uses: Tapiiri/dns-as-code/.github/workflows/onboard.yml@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+    with:
+      zone: ${{ inputs.zone }}
+    secrets:
+      hetzner-token-ro: ${{ secrets.HETZNER_TOKEN_RO }}
+
+  # Declared here rather than as a reusable workflow, so the `production`
+  # environment and its secret are read in this repo and passed in explicitly.
+  apply:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: dns-apply
+      cancel-in-progress: false
+    steps:
+      - uses: Tapiiri/dns-as-code/actions/apply@d3392c720fb8e30f798d9b11d368bc23c4f6a078 # v1.1.0
+        with:
+          hetzner-token: ${{ secrets.HETZNER_TOKEN }}

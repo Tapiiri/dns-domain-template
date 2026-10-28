@@ -1,0 +1,26 @@
+# octoDNS configuration for this repo's one zone.
+#
+# The YAML in zones/ is the only source of truth; octoDNS deletes anything in a
+# managed zone that the YAML lacks.
+#
+# The zone list starts empty. The onboard run lists the zone here in the same
+# commit that adds its zone file, dumped from Hetzner. Never list a zone before
+# its zone file exists: validation fails, and nothing may apply until it does.
+
+providers:
+  config:
+    class: octodns.provider.yaml.YamlProvider
+    directory: ./zones
+    default_ttl: 3600
+    enforce_order: true
+
+  hetzner:
+    class: octodns_hetzner.HetznerProvider
+    # REQUIRED. The provider's default is `dnsapi`, which points at the
+    # standalone DNS API that Hetzner removed on 2026-05-27.
+    backend: hcloud
+    # Hetzner Cloud API token: read-only in plan, dump and onboard, read-write
+    # in apply.
+    token: env/HETZNER_TOKEN
+
+zones: {}
